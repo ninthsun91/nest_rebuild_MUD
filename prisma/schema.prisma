@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @default(autoincrement()) @id
+  username  String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  character Character?
+}
+
+model Character {
+  id        Int       @default(autoincrement()) @id
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @unique
+  name      String
+  level     Int       @default(1)
+  attack    Int       @default(10)
+  maxHp     Int       @default(100)
+  maxMp     Int       @default(100)
+  curHp     Int       @default(100)
+  curMp     Int       @default(100)
+  exp       Int       @default(0)
+  monster   Monster[]
+}
+
+model Monster {
+  id        Int       @default(autoincrement()) @id
+  character Character @relation(fields: [characterId], references: [id])
+  characterId Int
+  name      String
+  type      Int
+  hp        Int
+  attack    Int
+  exp       Int
+}
