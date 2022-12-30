@@ -1,55 +1,56 @@
-import { Body, Controller, Get, Post, Delete, HttpException, HttpStatus, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Delete,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
-import { CreateUserDto, FindUserDto } from './dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
+  constructor(private readonly userService: UserService) {}
 
-    constructor(private readonly userService: UserService) {}
+  @Get()
+  async findAllUsers(): Promise<User[]> {
+    return this.userService.users({});
+  }
 
-    @Get()
-    async findAllUsers(): Promise<User[]> {
-      return this.userService.users({});
-    }
+  @Get('/:id')
+  async findUser(@Param('id') id: number): Promise<User> {
+    const where = { id };
+    const user = await this.userService.user(where);
+    if (!user) throw new HttpException(
+      'USER NOT FOUND', HttpStatus.BAD_REQUEST
+    );
 
-    @Get('/:id')
-    async findUser(
-      @Param('id') id: string
-    ): Promise<User> {
-      const user = await this.userService.user({ id: +id });
-      if (!user) throw new HttpException(
-          'USER NOT FOUND', HttpStatus.BAD_REQUEST
-      );
+    return user;
+  }
 
-      return user;
-    }
-  
-    @Post()
-    async createUser(
-      @Body() userData: CreateUserDto
-    ): Promise<void> {
-      const user = this.userService.createUser(userData);
-      if (!user) throw new HttpException(
-          'USER CREATION ERROR', HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+  @Post()
+  async createUser(@Body() userData: CreateUserDto): Promise<void> {
+    await this.userService.createUser(userData);
+  }
 
-    @Patch('/:id')
-    async updateUser(
-      @Body() data: UpdateUserDto,
-      @Param('id') id: string
-    ): Promise<void> {
-      const where = { id: +id };
-      await this.userService.updateUser({ where, data });
+  @Patch('/:id')
+  async updateUser(
+    @Body() data: UpdateUserDto,
+    @Param('id') id: number,
+  ): Promise<void> {
+    const where = { id };
+    await this.userService.updateUser({ where, data });
+  }
 
-    }
-
-    @Delete()
-    async deleteUser(
-      @Body() username: Pick<CreateUserDto, 'username'>
-    ): Promise<void> {
-      await this.userService.deleteUser(username);
-    }
+  @Delete()
+  async deleteUser(
+    @Body() username: Pick<CreateUserDto, 'username'>,
+  ): Promise<void> {
+    await this.userService.deleteUser(username);
+  }
 }

@@ -1,5 +1,6 @@
-
+import { IsNumber } from "class-validator";
 
 export class FindUserDto {
-    readonly username: string;
+  @IsNumber()
+  readonly id: number;
 }
