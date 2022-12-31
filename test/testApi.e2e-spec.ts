@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { PrismaClient } from '@prisma/client';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -22,15 +21,6 @@ describe('AppController (e2e)', () => {
     );
     await app.init();
   });
-
-  /** SAMPLE
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-  */
 
   describe('/user', () => {
     it('POST - fail: validation error(missing field)', () => {
