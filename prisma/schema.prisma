@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id        Int       @default(autoincrement()) @id
+  userId    Int       @default(autoincrement()) @id
   username  String    @unique
   password  String
   createdAt DateTime  @default(now())
@@ -20,8 +20,8 @@ model User {
 }
 
 model Character {
-  id        Int       @default(autoincrement()) @id
-  user      User      @relation(fields: [userId], references: [id])
+  characterId Int     @default(autoincrement()) @id
+  user      User      @relation(fields: [userId], references: [userId])
   userId    Int       @unique
   name      String
   level     Int       @default(1)
@@ -35,8 +35,8 @@ model Character {
 }
 
 model Monster {
-  id        Int       @default(autoincrement()) @id
-  character Character @relation(fields: [characterId], references: [id])
+  monsterId Int       @default(autoincrement()) @id
+  character Character @relation(fields: [characterId], references: [characterId])
   characterId Int
   name      String
   type      Int
