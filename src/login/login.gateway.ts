@@ -1,10 +1,15 @@
 import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { UserInfoPipe } from 'src/common/exception';
 import { SocketInputDto, SocketResponseDto } from '../common/dto';
 import { FrontService, NoneService, SignService } from './service';
 
-@UsePipes(new ValidationPipe())
+@UsePipes(new ValidationPipe({
+  whitelist: true,
+  forbidNonWhitelisted: true,
+  transform: true,
+}))
 @WebSocketGateway({ 
   namespace: 'login', 
   cors: ['http://localhost:8080', '*']})
@@ -37,9 +42,11 @@ export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
     return this.noneService.loadFront(payload);
   }
 
+  @UsePipes(new UserInfoPipe())
   @SubscribeMessage('front')
   frontHandler(client: Socket, payload: SocketInputDto): void {
-    const message = `/login/front, line: ${payload.line}, user: ${payload.userInfo}`;
+    console.log('front handler')
+    const message = `/login/front, line: ${payload.line}, user: ${JSON.stringify(payload.userInfo)}`;
     this.logger.log(message);
 
     this.frontService.handler(client, payload);
