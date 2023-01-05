@@ -23,8 +23,8 @@ export class UserController {
   }
 
   @Get('/:id')
-  async findUser(@Param('id') id: number): Promise<User> {
-    const where = { id };
+  async findUser(@Param('id') userId: number): Promise<User> {
+    const where = { userId };
     const user = await this.userService.user(where);
     if (!user) throw new HttpException(
       'USER NOT FOUND', HttpStatus.BAD_REQUEST
@@ -41,9 +41,9 @@ export class UserController {
   @Patch('/:id')
   async updateUser(
     @Body() data: UpdateUserDto,
-    @Param('id') id: number,
+    @Param('id') userId: number,
   ): Promise<void> {
-    const where = { id };
+    const where = { userId };
     await this.userService.updateUser({ where, data });
   }
 

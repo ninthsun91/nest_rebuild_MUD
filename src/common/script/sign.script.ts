@@ -27,4 +27,6 @@ export const signScript = {
     던전으로 가려면 <span style="color:yellow">[D]ungeon</span>을,
     마을로 가려면 <span style="color:yellow">[V]illage</span>를,
     접속을 종료하려면 <span style="color:yellow">[OUT]</span>을 입력해주세요.\n`,
+
+    error: `정상적이지 않은 접근입니다.\n`
 };

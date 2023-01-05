@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { prismaMock, PrismaService } from '../prisma';
+import { PrismaService } from '../prisma';
 import { UserService } from '../user';
 import { HttpException } from '@nestjs/common/exceptions';
+import { prismaMock } from '../prisma/singleton';
 
 describe('UserService', () => {
   const createdAt = new Date();

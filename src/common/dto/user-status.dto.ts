@@ -43,13 +43,13 @@ export class UserStatusDto {
 
     @IsOptional()
     @IsNumber()
-    readonly cooldown: number;
+    readonly cooldown?: number;
 
     @IsOptional()
     @IsBoolean()
-    readonly levelup: boolean;
+    readonly levelup?: boolean;
 
     @IsOptional()
     @IsString()
-    readonly isDead: string;
+    readonly isDead?: string;
 }

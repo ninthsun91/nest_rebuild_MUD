@@ -16,6 +16,7 @@ export class UserInfoPipe implements PipeTransform<any> {
         const socketInputResult = await validate(object);
         const userInfoResult = object?.userInfo ?
             UserInfoDto.isUserInfo(object?.userInfo) : true;
+
         if (socketInputResult.length > 0 || !userInfoResult) {
             throw new BadRequestException('UserInfoPipe validation failed');
         }

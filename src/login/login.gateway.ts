@@ -18,7 +18,7 @@ export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(
     private readonly frontService: FrontService,
     private readonly noneService: NoneService,
-    private readonly signService: SignService
+    private readonly signService: SignService,
   ) {}
 
   afterInit(server: Server) {
@@ -45,15 +45,18 @@ export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
   @UsePipes(new UserInfoPipe())
   @SubscribeMessage('front')
   frontHandler(client: Socket, payload: SocketInputDto): void {
-    console.log('front handler')
     const message = `/login/front, line: ${payload.line}, user: ${JSON.stringify(payload.userInfo)}`;
     this.logger.log(message);
 
     this.frontService.handler(client, payload);
   }
 
+  @UsePipes(new UserInfoPipe())
   @SubscribeMessage('sign')
-  signHandler(client: Socket, payload: SocketInputDto): void {
-    client.emit('message', { message: 'FROM LOGIN SIGNHANDLER' });
+  signHandler(client: Socket, payload: SocketInputDto): void {    
+    const message = `/login/sign, line: ${payload.line}, user: ${JSON.stringify(payload.userInfo)}`;
+    this.logger.log(message);
+
+    this.signService.handler(client, payload);
   }
 }

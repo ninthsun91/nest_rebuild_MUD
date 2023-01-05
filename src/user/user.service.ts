@@ -45,7 +45,7 @@ export class UserService {
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
-    return this.prisma.user.update({ data, where }).catch((error) => {
+    return this.prisma.user.update({ where, data }).catch((error) => {
       throw new HttpException(
         'USER NOT FOUND', HttpStatus.BAD_REQUEST, { cause: error }
       );

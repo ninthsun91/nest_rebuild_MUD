@@ -10,7 +10,7 @@ describe('UserController', () => {
   const createdAt = new Date();
   const updatedAt = createdAt;
   const user = {
-    id: 99,
+    userId: 99,
     username: 'test',
     password: '1234',
     createdAt,
@@ -56,7 +56,7 @@ describe('UserController', () => {
   describe('findUser()', () => {
     it('FAIL: should throw HttpException', async() => {
       jest.spyOn(service, 'user').mockImplementation(async(where) => {
-        return where.id !== 99 ? null : user;
+        return where.userId !== 99 ? null : user;
       });
 
       expect(controller.findUser(999)).rejects.toBeInstanceOf(HttpException);
@@ -65,7 +65,7 @@ describe('UserController', () => {
     it('should return user', async() => {
       jest.spyOn(service, 'user').mockImplementation(async() => user);
 
-      expect(controller.findUser(user.id)).resolves.toEqual(user);
+      expect(controller.findUser(user.userId)).resolves.toEqual(user);
     });
   });
 
@@ -82,7 +82,7 @@ describe('UserController', () => {
       jest.spyOn(service, 'updateUser').mockImplementation(async() => user);
       const data = { username: 'updated' };
 
-      expect(controller.updateUser(data, user.id)).resolves.toBeFalsy();
+      expect(controller.updateUser(data, user.userId)).resolves.toBeFalsy();
     });
   });
 
