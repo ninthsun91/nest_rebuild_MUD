@@ -8,8 +8,8 @@ describe('UserService', () => {
   const createdAt = new Date();
   const updatedAt = createdAt;
   const user = {
-    id: 99,
-    username: 'test',
+    userId: 99,
+    username: 'testtest',
     password: '1234',
     createdAt,
     updatedAt,
@@ -60,7 +60,7 @@ describe('UserService', () => {
     });
     
     it('should return username "test"', async () => {
-      const where = { id: user.id };
+      const where = { userId: user.userId };
 
       const result = await service.user(where);
       
@@ -82,7 +82,7 @@ describe('UserService', () => {
     prismaMock.user.update.mockResolvedValue(user);
 
     it('FAIL: should throw HttpException', async () => {
-      const where = { id: 999 };
+      const where = { userId: 999 };
       const data = { username: 'testeddd' };
   
       expect(service.updateUser({ where, data })).rejects.toBeInstanceOf(
@@ -91,7 +91,7 @@ describe('UserService', () => {
     });
   
     it('should change username', async () => {
-      const where = { id: user.id };
+      const where = { userId: user.userId };
       const data = { username: 'tested' };
   
       const result = await service.updateUser({ where, data });
@@ -105,7 +105,7 @@ describe('UserService', () => {
     prismaMock.user.delete.mockResolvedValue(user);
 
     it('FAIL: should throw HttpException', async () => {
-      const where = { id: 999 };
+      const where = { userId: 999 };
   
       expect(service.deleteUser(where)).rejects.toBeInstanceOf(HttpException);
     });

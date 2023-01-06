@@ -33,11 +33,18 @@ const openEventListener = (socket) => {
 
 const openSocketListener = (socket) => {
     socket.on('print', printHandler);
+    socket.on('exception', exceptionHandler);
 }
 
 const printHandler = ({ field, script, userInfo }) => {
     localStorage.setItem('field', field);
-    localStorage.setItem('userInfo', userInfo);
+    if (userInfo) localStorage.setItem('userInfo', userInfo);
+
+    commendLine.innerHTML = script;
+}
+
+const exceptionHandler = ({ field, script }) => {
+    if (field) localStorage.setItem('field', field);
 
     commendLine.innerHTML = script;
 }
@@ -50,8 +57,8 @@ const commendSubmitHandler = (event, socket) => {
     commendInput.value = '';
     console.log(`submit: '${line}'`);
 
-    const field = localStorage.getItem('field');
+    const [field, option] = localStorage.getItem('field').split(':');
     const userInfo = localStorage.getItem('userInfo');
 
-    socket.emit(field, { line, userInfo });
+    socket.emit(field, { line, userInfo, option });
 }

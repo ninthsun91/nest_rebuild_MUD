@@ -30,9 +30,9 @@ export class SignService {
 				return;
 		}
 		
-		this[cmdRoute[option]](CMD1, userInfo).then((data: SocketResponseDto) => {
+		return this[cmdRoute[option]](CMD1, userInfo).then((data: SocketResponseDto) => {
 			client.emit('print', data);
-		});
+		})
 	}
 
 	async signupPassword(

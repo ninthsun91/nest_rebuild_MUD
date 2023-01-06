@@ -1,7 +1,7 @@
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Logger, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UserInfoPipe } from 'src/common/exception';
+import { UserInfoPipe, SocketExceptionFilter } from 'src/common/exception';
 import { SocketInputDto, SocketResponseDto } from '../common/dto';
 import { FrontService, NoneService, SignService } from './service';
 
@@ -10,6 +10,7 @@ import { FrontService, NoneService, SignService } from './service';
   forbidNonWhitelisted: true,
   transform: true,
 }))
+@UseFilters(new SocketExceptionFilter())
 @WebSocketGateway({ 
   namespace: 'login', 
   cors: ['http://localhost:8080', '*']})
@@ -53,10 +54,10 @@ export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
 
   @UsePipes(new UserInfoPipe())
   @SubscribeMessage('sign')
-  signHandler(client: Socket, payload: SocketInputDto): void {    
+  signHandler(client: Socket, payload: SocketInputDto): void {   
     const message = `/login/sign, line: ${payload.line}, user: ${JSON.stringify(payload.userInfo)}`;
     this.logger.log(message);
 
-    this.signService.handler(client, payload);
+    return this.signService.handler(client, payload)
   }
 }
