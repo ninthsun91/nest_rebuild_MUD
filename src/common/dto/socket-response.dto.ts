@@ -7,7 +7,7 @@ export class SocketResponseDto {
 
     readonly script: string;
 
-    readonly userInfo: UserInfoDto;
+    readonly userInfo?: UserInfoDto;
 
-    readonly userStatus: UserStatusDto;
+    readonly userStatus?: UserStatusDto;
 }

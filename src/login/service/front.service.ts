@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { SocketInputDto, SocketResponseDto } from 'src/common/dto';
 import { UserInfoDto } from 'src/common/dto/user-info.dto';
@@ -7,7 +7,7 @@ import { fieldScript, homeScript, signScript } from 'src/common/script';
 
 @Injectable()
 export class FrontService {
-    handler(client: Socket, payload: SocketInputDto) {
+    handler(client: Socket, payload: SocketInputDto): void {
         const { line, userInfo } = payload;
 
         const [CMD1, CMD2] = line.trim().toUpperCase().split(' ');
@@ -18,15 +18,15 @@ export class FrontService {
             'OUT': this.signout,
             'DUNGEON': this.toDungeon,
             'VILLAGE': this.toVillage,
-            'DELETE': this.deleteAccount
+            'DELETE': this.deleteAccount,
         }
         if (!Object.hasOwn(cmdRoute, CMD1)) {
-            // NO MATCHING COMMAND FOUND
-            return;
+            throw new BadRequestException();
         }
 
         const data = cmdRoute[CMD1](CMD2, userInfo);
         client.emit('print', data);
+        return;
     }
 
     signin(CMD: string|undefined, userInfo: UserInfoDto): Partial<SocketResponseDto> {

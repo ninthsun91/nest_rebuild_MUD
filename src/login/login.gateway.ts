@@ -49,7 +49,7 @@ export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
     const message = `/login/front, line: ${payload.line}, user: ${JSON.stringify(payload.userInfo)}`;
     this.logger.log(message);
 
-    this.frontService.handler(client, payload);
+    return this.frontService.handler(client, payload);
   }
 
   @UsePipes(new UserInfoPipe())

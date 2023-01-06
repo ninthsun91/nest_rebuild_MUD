@@ -4,7 +4,7 @@ import { homeScript } from 'src/common/script';
 
 @Injectable()
 export class NoneService {
-    loadFront(payload: SocketInputDto): Pick<SocketResponseDto, 'field'|'script'> {
+    loadFront(payload: Pick<SocketInputDto, 'line'>): Pick<SocketResponseDto, 'field'|'script'> {
         const { line } = payload;
 
         if (line !== 'load') {

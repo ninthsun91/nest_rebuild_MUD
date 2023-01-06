@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { Prisma } from '@prisma/client';
 import { Socket } from 'socket.io';
@@ -13,7 +13,7 @@ export class SignService {
     private readonly loginRepo: LoginRepository,
   ) {}
 
-	handler(client: Socket, payload: SocketInputDto) {
+	handler(client: Socket, payload: SocketInputDto): void {
 		const { line, userInfo, option } = payload;
 		const [CMD1, CMD2] = line.trim().split(' ');
 
@@ -23,11 +23,9 @@ export class SignService {
 				'12': 'createCharacter',
 				'20': 'signinPassword',
 				'21': 'signinVerify',
-				'EMPTY': 'emptyCommend'
 		}
 		if (!Object.hasOwn(cmdRoute, option)) {
-				// NO MATCHING COMMAND FOUND
-				return;
+				throw new BadRequestException();
 		}
 		
 		return this[cmdRoute[option]](CMD1, userInfo).then((data: SocketResponseDto) => {
@@ -192,13 +190,6 @@ export class SignService {
 				...character,
 				username: user.username
 			}
-		}
-	}
-	emptyCommend(CMD: string|undefined, userInfo: UserInfoDto): Partial<SocketResponseDto> {
-		return {
-			field: 'sign:20',
-			script: '',
-			userInfo,
 		}
 	}
 }

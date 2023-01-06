@@ -21,38 +21,55 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     this.errorLogger(exception, host)
-    if (exception instanceof HttpException) {
-      const socketException = this.convertHttpException(exception);
-      return super.catch(socketException, host);
+    if (exception instanceof WsException) {
+      super.catch(exception, host);
     }
-    super.catch(exception, host);
+    else if (exception instanceof HttpException) {
+      const socketException = this.convertHttpException(exception);
+      super.catch(socketException, host);
+    }
+    else {
+      const socketException = this.convertUncaughtException(exception);
+      super.catch(socketException, host);
+    }
   }
 
   private convertHttpException(exception: HttpException): WsException {
-    if (exception instanceof BadRequestException) {
-      return new WsException({
-        field: undefined,
-        script: this.commendError
-      })
-    } else {
+    const script = exception instanceof BadRequestException 
+      ? this.commendError 
+      : this.serverError;
+    
+    return new WsException({
+      field: undefined,
+      script,
+    });
+  }
+
+  private convertUncaughtException(exception: unknown): WsException {
+    if (!(exception instanceof Error)) {
+      this.logger.error('!!Unknown Exception!!', exception);
       return new WsException({
         field: undefined,
         script: this.serverError
-      })
+      });
     }
+    
+    this.logger.error(`!!Uncaught Exception!! ${exception.name}: ${exception.message}`);
+    this.logger.error(exception.stack);
+    return new WsException({
+      field: undefined,
+      script: this.serverError
+    });
   }
 
   private errorLogger(exception: unknown, host: ArgumentsHost) {
     const ctx: SocketInputDto = host.switchToWs().getData();
     const userInfo = JSON.stringify(ctx.userInfo);
     
-    if (exception instanceof Error) {
-      const message = `error: ${exception.message}, user: ${userInfo}`;
-      this.logger.error(message);
-    } else {
-      const message = `unknown error, user: ${userInfo}`;
-      this.logger.error(message);
-    }
+    const message = exception instanceof Error
+      ? `error: ${exception.message}, user: ${userInfo}`
+      : `unknown error, user: ${userInfo}`;
+    this.logger.error(message);
   }
 
   // const response = exception.getResponse();
