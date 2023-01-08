@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
 import { BattleGateway } from './battle.gateway';
-import { BattleService } from './battle.service';
+import { BattleRepository } from './battle.repository';
+import { AutoService, DungeonService } from './service';
 
 @Module({
-  providers: [BattleGateway, BattleService]
+  providers: [
+    BattleGateway,
+    AutoService, DungeonService,
+    BattleRepository,
+  ]
 })
 export class BattleModule {}
