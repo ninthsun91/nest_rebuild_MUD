@@ -8,7 +8,7 @@ import { SocketResponseDto } from 'src/common/dto';
 import { signScript } from 'src/common/script';
 
 
-describe('Login Module (e2e)', () => {
+describe('Login Module(e2e test)', () => {
   let app: INestApplication;
   let clientSocket: ReturnType<typeof Client.io>;
 
