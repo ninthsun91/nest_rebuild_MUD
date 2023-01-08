@@ -19,21 +19,6 @@ describe('LoginService', () => {
     expect(service).toBeDefined();
   });
 
-  // describe.skip('handler', () => {
-  //   const client = {
-  //     emit: jest.fn((event: string, data: unknown) => data)
-  //   }
-
-  //   it('FAIL: should throw BadRequestException when wrong commend', () => {
-  //     const payload = {
-  //       line: 'wrong commend',
-  //       userInfo: { }
-  //     }
-
-  //     // expect(service.handler(client, payload))
-  //   })
-  // });
-
   describe('socket response test', () => {
     it('should return field "sign:20"', () => {
       const CMD = '';

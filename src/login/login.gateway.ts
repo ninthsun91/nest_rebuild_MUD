@@ -1,7 +1,8 @@
 import { Logger, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UserInfoPipe, SocketExceptionFilter } from 'src/common/exception';
+import { SocketExceptionFilter } from 'src/common/exception';
+import { UserInfoPipe } from 'src/common/pipe';
 import { SocketInputDto, SocketResponseDto } from '../common/dto';
 import { FrontService, NoneService, SignService } from './service';
 
@@ -15,7 +16,9 @@ import { FrontService, NoneService, SignService } from './service';
   namespace: 'login', 
   cors: ['http://localhost:8080', '*']})
 export class LoginGateway implements OnGatewayInit, OnGatewayConnection {
+
   private readonly logger = new Logger(LoginGateway.name);
+
   constructor(
     private readonly frontService: FrontService,
     private readonly noneService: NoneService,

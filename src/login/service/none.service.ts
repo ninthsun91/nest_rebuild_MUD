@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SocketInputDto, SocketResponseDto } from 'src/common/dto';
 import { homeScript } from 'src/common/script';
 
@@ -8,10 +8,7 @@ export class NoneService {
         const { line } = payload;
 
         if (line !== 'load') {
-            return {
-                field: 'none',
-                script: 'THIS IS UNEXPECTED ERROR'
-            }
+            throw new NotFoundException()
         }
 
         return {

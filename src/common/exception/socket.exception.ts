@@ -1,4 +1,4 @@
-import { ArgumentsHost, BadRequestException, Catch, HttpException, Logger } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, Catch, HttpException, Logger, NotFoundException } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 import { SocketInputDto } from '../dto';
 
@@ -11,6 +11,9 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
   private readonly serverError =
   `알 수 없는 서버 장애가 발생했습니다.
   다시 시도하거나 재접속을 해주세요.\n`
+
+  private readonly notFoundError =
+  `Unable to load contents.`
 
   private logger: Logger;
 
@@ -37,6 +40,8 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
   private convertHttpException(exception: HttpException): WsException {
     const script = exception instanceof BadRequestException 
       ? this.commendError 
+      : exception instanceof NotFoundException
+      ? this.notFoundError
       : this.serverError;
     
     return new WsException({

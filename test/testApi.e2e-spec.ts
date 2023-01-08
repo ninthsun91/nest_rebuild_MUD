@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from 'src/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  const username = `test${Date.now().toString().slice(-10)}`;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -22,11 +23,13 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  afterAll(() => {
+    app.close();
+  });
+
   describe('/user', () => {
     it('POST - fail: validation error(missing field)', () => {
-      const userData = {
-        username: 'test'
-      }
+      const userData = { username }
       return request(app.getHttpServer())
         .post('/user')
         .send(userData)
@@ -34,7 +37,7 @@ describe('AppController (e2e)', () => {
     });
     it('POST - fail: validation error(unnecessary field)', () => {
       const userData = {
-        username: 'test',
+        username,
         password: 'qwe123',
         confirm: 'qwe123'
       }
@@ -45,7 +48,7 @@ describe('AppController (e2e)', () => {
     });
     it('POST - fail: validation error(wrong format)', () => {
       const userData = {
-        username: 'test',
+        username,
         password: '1234'
       }
       return request(app.getHttpServer())
@@ -55,7 +58,7 @@ describe('AppController (e2e)', () => {
     });
     it('POST - success', () => {
       const userData = {
-        username: 'test',
+        username,
         password: 'qwe123'
       }
       return request(app.getHttpServer())
@@ -65,7 +68,7 @@ describe('AppController (e2e)', () => {
       });
       it('POST - fail: username duplication', () => {
       const userData = {
-        username: 'test',
+        username,
         password: 'qwe123'
       }
       return request(app.getHttpServer())
@@ -92,7 +95,7 @@ describe('AppController (e2e)', () => {
         .get('/user/1')
         .expect(200)
         .expect((res) => {
-          if (res.body?.username === 'root') return true
+          if (res.body?.username === 'test') return true
         });
     });
     it('PATCH - fail: validation error(unnecessary field', () => {
@@ -131,7 +134,7 @@ describe('AppController (e2e)', () => {
     it('DELETE - success', () => {
       return request(app.getHttpServer())
         .delete('/user')
-        .send({ username: 'test' })
+        .send({ username })
         .expect(200);
     });
   });
